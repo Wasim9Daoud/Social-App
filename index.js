@@ -1,7 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 
+const User = require("./models/User");
 const authRouter = require("./Routes/authRouter");
+const usersRouter = require("./Routes/usersRouter");
+const postRouter = require("./Routes/postRouter");
+const commentRouter = require("./Routes/CommentsRouter");
+const categoryRouter = require("./Routes/CategoryRouter");
 
 const cors = require("cors");
 const xss = require("xss-clean");
@@ -14,15 +19,13 @@ const { errorHandler, notFound } = require("./middleWares/error");
 require("dotenv").config();
 
 // connecting with MongoDB
-mongoose.connect(process.env.MONGODB_CONNECT)
-.then(console.log("connected to MongoDB successfully ^_^"))
-.catch((err) => console.log(err));
+mongoose.connect('mongodb+srv://wasim:wasim@cluster0.vnemq.mongodb.net/chatDB?retryWrites=true&w=majority&appName=Cluster0').then(console.log("connected to MongoDB successfully ^_^")).catch((err) => console.log(err));
 
 // create express app
 const app = express();
 app.use(express.json());
 
-// prevent xss-( cross-side-scripting ) Attacks
+// prevent xss-( cross-side-scripting ) Attacks  
 app.use(xss());
 
 // express-rate-limit
@@ -43,7 +46,10 @@ app.use(cors({
 
 // Routers
 app.use("/api/auth", authRouter);
-
+app.use("/api/users", usersRouter);
+app.use("/api/posts", postRouter);
+app.use("/api/comments", commentRouter);
+app.use("/api/categorY", categoryRouter);
 
 // ERROR-HANDLER MIDDLEWARE
 app.use(notFound); // must be here after routes and before errorHandler
